@@ -1,0 +1,24 @@
+{
+    "name": "esp-dps368",
+    "version": "2.0.0",
+    "description": "A library built on esp-idf for reading DPS368 temperature and pressure sensors.",
+    "keywords": "dps368, temperature, temp, pressure, sensor, i2c, hardware, esp-idf, esp32, esp8266",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/khoek/esp-dps368.git"
+    },
+    "authors": [
+        {
+            "name": "Keeley Hoek",
+            "email": "keeley@hoek.io",
+            "url": "https://hoek.io"
+        }
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/khoek/esp-dps368",
+    "frameworks": "espidf",
+    "platforms": "espressif32",
+    "dependencies": {
+        "khoek/libi2c": "^1.0.0"
+    }
+}
