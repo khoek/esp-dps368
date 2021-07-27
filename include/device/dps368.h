@@ -121,7 +121,7 @@ void dps368_reset(dps368_handle_t dev);
 uint8_t dps368_reg_read(dps368_handle_t dev, dps368_reg_t reg);
 
 // Read `count` registers over I2C.
-void dps368_reg_batch_read(dps368_handle_t dev, dps368_reg_t reg_start, uint8_t count, uint8_t* vals);
+void dps368_reg_batch_read(dps368_handle_t dev, dps368_reg_t reg_start, uint8_t* vals, uint8_t count);
 
 // Write a register over I2C.
 void dps368_reg_write(dps368_handle_t dev, dps368_reg_t reg, uint8_t val);

@@ -50,7 +50,7 @@ esp_err_t dps368_init(i2c_port_t port, uint8_t addr, dps368_handle_t* out_dev) {
     vTaskDelay(1 + (3 / portTICK_PERIOD_MS));
 
     uint8_t ver;
-    if (i2c_7bit_reg_read(dev->handle, DPS368_REG_PRODUCT_ID, 1, &ver) != ESP_OK) {
+    if (i2c_7bit_reg8b_read(dev->handle, DPS368_REG_PRODUCT_ID, &ver, 1) != ESP_OK) {
         ESP_LOGE(TAG, "I2C read failed, are I2C pin numbers/address correct?");
         goto dps368_init_fail;
     }
@@ -72,7 +72,7 @@ esp_err_t dps368_init(i2c_port_t port, uint8_t addr, dps368_handle_t* out_dev) {
     dps368_reset(dev);
 
     uint8_t coeff_regs[COUNT_DPS368_REG_COEF];
-    dps368_reg_batch_read(dev, DPS368_REG_COEF_MIN, COUNT_DPS368_REG_COEF, coeff_regs);
+    dps368_reg_batch_read(dev, DPS368_REG_COEF_MIN, coeff_regs, COUNT_DPS368_REG_COEF);
 
     convert_3b8_to_signed_2b12_double(&dev->coeffs.c0, &dev->coeffs.c1, coeff_regs[0x00], coeff_regs[0x01], coeff_regs[0x02]);
     convert_5b8_to_signed_2b20_double(&dev->coeffs.c00, &dev->coeffs.c10, coeff_regs[0x03], coeff_regs[0x04], coeff_regs[0x05], coeff_regs[0x06], coeff_regs[0x07]);
@@ -115,21 +115,21 @@ void dps368_reset(dps368_handle_t dev) {
 
 uint8_t dps368_reg_read(dps368_handle_t dev, dps368_reg_t reg) {
     uint8_t val;
-    ESP_ERROR_CHECK(i2c_7bit_reg_read(dev->handle, reg, 1, &val));
+    ESP_ERROR_CHECK(i2c_7bit_reg8b_read(dev->handle, reg, &val, 1));
 
     ESP_LOGD(TAG, "reg_read(0x%02X)=0x%02X", reg, val);
     return val;
 }
 
-void dps368_reg_batch_read(dps368_handle_t dev, dps368_reg_t reg_start, uint8_t count, uint8_t* vals) {
+void dps368_reg_batch_read(dps368_handle_t dev, dps368_reg_t reg_start, uint8_t* vals, uint8_t count) {
     assert(count > 0);
-    ESP_ERROR_CHECK(i2c_7bit_reg_read(dev->handle, reg_start, count, vals));
+    ESP_ERROR_CHECK(i2c_7bit_reg8b_read(dev->handle, reg_start, vals, count));
 
     ESP_LOGD(TAG, "reg_batch_read(0x%02X, count=%d)={[0]=0x%02X, ...}", reg_start, count, *vals);
 }
 
 void dps368_reg_write(dps368_handle_t dev, dps368_reg_t reg, uint8_t val) {
-    ESP_ERROR_CHECK(i2c_7bit_reg_write(dev->handle, reg, 1, &val));
+    ESP_ERROR_CHECK(i2c_7bit_reg8b_write(dev->handle, reg, &val, 1));
 
     ESP_LOGD(TAG, "reg_write(0x%02X)=0x%02X", reg, val);
 }
