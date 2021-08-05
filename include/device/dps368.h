@@ -1,5 +1,4 @@
-#ifndef __LIB_DPS368_H
-#define __LIB_DPS368_H
+#pragma once
 
 #include <driver/i2c.h>
 
@@ -108,31 +107,39 @@ typedef struct dps368 dps368_t;
 typedef dps368_t* dps368_handle_t;
 
 // Register the DPS368 on the given I2C bus.
-esp_err_t dps368_init(i2c_port_t port, uint8_t addr, dps368_handle_t* out_dev);
+__result_use_check esp_err_t dps368_init(i2c_port_t port, uint8_t addr,
+                                         dps368_handle_t* out_dev);
 
 // Release the given handle.
 void dps368_destroy(dps368_handle_t dev);
 
-// Reset the DPS368. This function guarentees that full init including coefficient
-// loading has completed by the time it returns.
-void dps368_reset(dps368_handle_t dev);
+// Reset the DPS368. This function guarentees that full init including
+// coefficient loading has completed by the time it returns.
+__result_use_check esp_err_t dps368_reset(dps368_handle_t dev);
 
 // Read a register over I2C.
-uint8_t dps368_reg_read(dps368_handle_t dev, dps368_reg_t reg);
+__result_use_check esp_err_t dps368_reg_read(dps368_handle_t dev,
+                                             dps368_reg_t reg, uint8_t* val);
 
 // Read `count` registers over I2C.
-void dps368_reg_batch_read(dps368_handle_t dev, dps368_reg_t reg_start, uint8_t* vals, uint8_t count);
+__result_use_check esp_err_t dps368_reg_batch_read(dps368_handle_t dev,
+                                                   dps368_reg_t reg_start,
+                                                   uint8_t* vals,
+                                                   uint8_t count);
 
 // Write a register over I2C.
-void dps368_reg_write(dps368_handle_t dev, dps368_reg_t reg, uint8_t val);
+__result_use_check esp_err_t dps368_reg_write(dps368_handle_t dev,
+                                              dps368_reg_t reg, uint8_t val);
 
-int32_t dps368_get_raw_psr(dps368_handle_t dev);
-int32_t dps368_get_raw_tmp(dps368_handle_t dev);
+__result_use_check esp_err_t dps368_get_raw_measurements(dps368_handle_t dev,
+                                                         int32_t* raw_psr,
+                                                         int32_t* raw_tmp);
 
 // Returns the compensated pressure in Pa.
-double dps368_calc_compensated_psr(dps368_handle_t dev, int32_t raw_psr, uint32_t scaling_factor_psr, int32_t raw_tmp, uint32_t scaling_factor_tmp);
+double dps368_calc_compensated_psr(dps368_handle_t dev, int32_t raw_psr,
+                                   uint32_t scaling_factor_psr, int32_t raw_tmp,
+                                   uint32_t scaling_factor_tmp);
 
 // Returns the compensated temperature in degrees C.
-double dps368_calc_compensated_tmp(dps368_handle_t dev, int32_t raw_tmp, uint32_t scaling_factor_tmp);
-
-#endif
+double dps368_calc_compensated_tmp(dps368_handle_t dev, int32_t raw_tmp,
+                                   uint32_t scaling_factor_tmp);

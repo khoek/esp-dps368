@@ -1,12 +1,11 @@
-#ifndef __LIB__DPS368_PRIVATE_H
-#define __LIB__DPS368_PRIVATE_H
+#pragma once
 
 #include <libi2c.h>
 
 #include "device/dps368.h"
 
 typedef struct dps368_coeffs {
-    double c0;
+    double c0_half;
     double c1;
     double c00;
     double c10;
@@ -22,5 +21,3 @@ struct dps368 {
 
     dps368_coeffs_t coeffs;
 };
-
-#endif
